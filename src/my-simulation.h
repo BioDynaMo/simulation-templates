@@ -7,9 +7,7 @@ namespace bdm {
 
 // Define compile time parameter
 template <typename Backend>
-struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
-  using BiologyModules = Variant<NullBiologyModule>;
-};
+struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {};
 
 inline int Simulate(int argc, const char** argv) {
   InitializeBioDynamo(argc, argv);
