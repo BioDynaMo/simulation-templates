@@ -1,5 +1,5 @@
-#ifndef SOMA_CLUSTERUING_BIOLOGY_MODULES_H_
-#define SOMA_CLUSTERUING_BIOLOGY_MODULES_H_
+#ifndef SOMA_CLUSTERING_BIOLOGY_MODULES_H_
+#define SOMA_CLUSTERING_BIOLOGY_MODULES_H_
 
 #include "biodynamo.h"
 
@@ -10,7 +10,6 @@ enum Substances { kSubstance_0, kSubstance_1 };
 // Define displacement behavior:
 // Cells move along the diffusion gradient (from low concentration to high)
 struct Chemotaxis : public BaseBiologyModule {
-  // Daughter cells inherit this biology module
   Chemotaxis() : BaseBiologyModule(gAllBmEvents) {}
 
   template <typename T>
@@ -47,7 +46,6 @@ struct Chemotaxis : public BaseBiologyModule {
 
 // Define secretion behavior:
 struct SubstanceSecretion : public BaseBiologyModule {
-  // Daughter cells inherit this biology module
   SubstanceSecretion() : BaseBiologyModule(gAllBmEvents) {}
 
   template <typename T>
@@ -74,4 +72,4 @@ struct SubstanceSecretion : public BaseBiologyModule {
 
 }  // namespace bdm
 
-#endif  // SOMA_CLUSTERUING_BIOLOGY_MODULES_H_
+#endif  // SOMA_CLUSTERING_BIOLOGY_MODULES_H_
