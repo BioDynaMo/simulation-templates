@@ -17,7 +17,7 @@ namespace bdm {
 // Define compile time parameter
 template <typename Backend>
 struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
-  using BiologyModules = Variant<GrowDivide, Chemotaxis, KaliumSecretion>;
+  using BiologyModules = Variant<Chemotaxis, KaliumSecretion>;
 };
 
 inline int Simulate(int argc, const char** argv) {
@@ -31,7 +31,6 @@ inline int Simulate(int argc, const char** argv) {
     cell.SetAdherence(0.4);
     cell.SetMass(1.0);
     cell.AddBiologyModule(Chemotaxis());
-    cell.AddBiologyModule(GrowDivide(32, 1500, {gAllBmEvents}));
     // Let only one cell be responsible for the artificial substance secretion
     if (position[0] == 0 && position[1] == 0 && position[2] == 0) {
       cell.AddBiologyModule(KaliumSecretion());
