@@ -18,21 +18,20 @@ namespace bdm {
 template <typename Backend>
 struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
   using BiologyModules = Variant<Chemotaxis, KaliumSecretion>;
+  // use default Backend and AtomicTypes
 };
 
 inline int Simulate(int argc, const char** argv) {
+  // Initialize BioDynaMo
   InitializeBioDynamo(argc, argv);
 
-  Param::backup_interval_ = 1;
-  // Define initial model - in this example: two cells
   auto construct = [](const std::array<double, 3>& position) {
     Cell cell(position);
     cell.SetDiameter(30);
-    cell.SetAdherence(0.4);
     cell.SetMass(1.0);
     cell.AddBiologyModule(Chemotaxis());
-    // Let only one cell be responsible for the artificial substance secretion
-    if (position[0] == 0 && position[1] == 0 && position[2] == 0) {
+    std::array<double, 3> secretion_position = {{50, 50, 50}};
+    if (position == secretion_position) {
       cell.AddBiologyModule(KaliumSecretion());
     }
     return cell;
@@ -46,15 +45,16 @@ inline int Simulate(int argc, const char** argv) {
   positions.push_back({100, 0, 100});
   positions.push_back({100, 100, 0});
   positions.push_back({100, 100, 100});
+  // the cell responsible for secretion
+  positions.push_back({50, 50, 50});
   ModelInitializer::CreateCells(positions, construct);
 
   // Define the substances that cells may secrete
-  ModelInitializer::DefineSubstance(kKalium, "Kalium", 0.4, 0, 5);
+  ModelInitializer::DefineSubstance(kKalium, "Kalium", 0.4, 0, 8);
 
   // Run simulation for N timesteps
-  Param::live_visualization_ = true;
   Scheduler<> scheduler;
-  scheduler.Simulate(3500);
+  scheduler.Simulate(350);
   return 0;
 }
 

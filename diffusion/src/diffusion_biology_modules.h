@@ -1,6 +1,8 @@
 #ifndef DIFFUSION_BIOLOGY_MODULES_H_
 #define DIFFUSION_BIOLOGY_MODULES_H_
 
+#include "biodynamo.h"
+
 namespace bdm {
 
 // List the extracellular substances
@@ -37,8 +39,8 @@ struct KaliumSecretion : public BaseBiologyModule {
   template <typename T>
   void Run(T* cell) {
     static auto dg = GetDiffusionGrid(kKalium);
-    array<double, 3> secretion_position = {50, 50, 50};
-    dg->IncreaseConcentrationBy(secretion_position, 4);
+    double amount = 4;
+    dg->IncreaseConcentrationBy(cell->GetPosition(), amount);
   }
 
   ClassDefNV(KaliumSecretion, 1);
