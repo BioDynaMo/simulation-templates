@@ -63,3 +63,8 @@ Doxyfile
 doc/html
 doc/latex
 
+#------------------- Paraview --------------------
+*.vtu
+*.vti
+*.pvtu
+*.pvti
