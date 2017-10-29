@@ -9,16 +9,15 @@
 namespace bdm {
 
 // -----------------------------------------------------------------------------
-// This model creates 8 cells at each corner of a cube. A substance is
-// artificially added in the middle of this cube. The cells are modeled to
-// displace according to the extracellular gradient; in this case to the middle.
+// This model creates 8 cells at each corner of a cube, and one in the middle.
+// The cell in the middle secretes a substance. The cells are modeled to
+// move according to the extracellular gradient; in this case to the middle.
 // -----------------------------------------------------------------------------
 
 // Define compile time parameter
 template <typename Backend>
 struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
   using BiologyModules = Variant<Chemotaxis, KaliumSecretion>;
-  // use default Backend and AtomicTypes
 };
 
 inline int Simulate(int argc, const char** argv) {
