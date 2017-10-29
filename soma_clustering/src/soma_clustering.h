@@ -34,7 +34,7 @@ struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
 inline int Simulate(int argc, const char** argv) {
   InitializeBioDynamo(argc, argv);
 
-  // 3. Define initial model
+  // Define initial model
   // Create an artificial bounds for the simulation space
   Param::bound_space_ = true;
   Param::min_bound_ = 0;
@@ -68,18 +68,14 @@ inline int Simulate(int argc, const char** argv) {
   ModelInitializer::CreateCellsRandom(Param::min_bound_, Param::max_bound_,
                                       num_cells / 2, construct_1);
 
-  // 3. Define the substances that cells may secrete
+  // Define the substances that cells may secrete
   // Order: substance_name, diffusion_coefficient, decay_constant, resolution
   ModelInitializer::DefineSubstance(kSubstance_0, "Substance_0", 0.5, 0.1, 1);
   ModelInitializer::DefineSubstance(kSubstance_1, "Substance_1", 0.5, 0.1, 1);
 
-  // 4. Run simulation for N timesteps
-  Param::export_visualization_ = true;
-  Param::live_visualization_ = true;
-  Param::visualization_export_interval_ = 1000;
+  // Run simulation for N timesteps
   Scheduler<> scheduler;
-
-  scheduler.Simulate(1001);
+  scheduler.Simulate(1000);
 
   double spatial_range = 5;
   auto crit = GetCriterion(spatial_range, num_cells / 8);
