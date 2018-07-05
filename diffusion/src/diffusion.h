@@ -22,7 +22,7 @@ struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
 
 inline int Simulate(int argc, const char** argv) {
   // Initialize BioDynaMo
-  InitializeBioDynamo(argc, argv);
+  Simulation<> simulation(argc, argv);
 
   auto construct = [](const std::array<double, 3>& position) {
     Cell cell(position);
@@ -52,8 +52,7 @@ inline int Simulate(int argc, const char** argv) {
   ModelInitializer::DefineSubstance(kKalium, "Kalium", 0.4, 0, 8);
 
   // Run simulation for N timesteps
-  Scheduler<> scheduler;
-  scheduler.Simulate(350);
+  simulation.GetScheduler()->Simulate(350);
   return 0;
 }
 

@@ -9,7 +9,7 @@ include_directories("src")
 file(GLOB_RECURSE HEADERS src/*.h)
 file(GLOB_RECURSE SOURCES src/*.cc)
 
-bdm_add_executable(soma_clustering
+bdm_add_executable(soma-clustering
                    HEADERS ${HEADERS}
                    SOURCES ${SOURCES}
                    LIBRARIES ${BDM_REQUIRED_LIBRARIES})

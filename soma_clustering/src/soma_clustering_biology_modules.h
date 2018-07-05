@@ -12,11 +12,12 @@ enum Substances { kSubstance_0, kSubstance_1 };
 struct Chemotaxis : public BaseBiologyModule {
   Chemotaxis() : BaseBiologyModule(gAllBmEvents) {}
 
-  template <typename T>
+  template <typename T, typename TSimulation = Simulation<>>
   void Run(T* cell) {
     if (!init_) {
-      dg_0_ = GetDiffusionGrid(kSubstance_0);
-      dg_1_ = GetDiffusionGrid(kSubstance_1);
+      auto* rm = TSimulation::GetActive()->GetResourceManager();
+      dg_0_ = rm->GetDiffusionGrid(kSubstance_0);
+      dg_1_ = rm->GetDiffusionGrid(kSubstance_1);
       init_ = true;
     }
 
@@ -25,14 +26,13 @@ struct Chemotaxis : public BaseBiologyModule {
 
     if (cell->GetCellType() == 1) {
       dg_1_->GetGradient(position, &gradient_1_);
-      diff_gradient = Matrix::ScalarMult(5, gradient_1_);
+      diff_gradient = Math::ScalarMult(5, gradient_1_);
     } else {
       dg_0_->GetGradient(position, &gradient_0_);
-      diff_gradient = Matrix::ScalarMult(5, gradient_0_);
+      diff_gradient = Math::ScalarMult(5, gradient_0_);
     }
 
     cell->UpdatePosition(diff_gradient);
-    cell->SetPosition(cell->GetMassLocation());
   }
 
  private:
@@ -48,11 +48,12 @@ struct Chemotaxis : public BaseBiologyModule {
 struct SubstanceSecretion : public BaseBiologyModule {
   SubstanceSecretion() : BaseBiologyModule(gAllBmEvents) {}
 
-  template <typename T>
+  template <typename T, typename TSimulation = Simulation<>>
   void Run(T* cell) {
     if (!init_) {
-      dg_0_ = GetDiffusionGrid(kSubstance_0);
-      dg_1_ = GetDiffusionGrid(kSubstance_1);
+      auto* rm = TSimulation::GetActive()->GetResourceManager();
+      dg_0_ = rm->GetDiffusionGrid(kSubstance_0);
+      dg_1_ = rm->GetDiffusionGrid(kSubstance_1);
       init_ = true;
     }
     auto& secretion_position = cell->GetPosition();

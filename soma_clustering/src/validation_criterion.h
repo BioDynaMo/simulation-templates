@@ -9,9 +9,12 @@ namespace bdm {
 // Returns 0 if the cell locations within a subvolume of the total system,
 // comprising approximately target_n cells, are arranged as clusters, and 1
 // otherwise.
-template <typename TResourceManager = ResourceManager<>>
+template <typename TSimulation = Simulation<>>
 static bool GetCriterion(double spatial_range, int target_n) {
-  auto rm = TResourceManager::Get();
+  auto* sim = TSimulation::GetActive();
+  auto* rm = sim->GetResourceManager();
+  auto* param = sim->GetParam();
+
   auto my_cells = rm->template Get<MyCell>();
   int n = my_cells->size();
 
@@ -30,7 +33,7 @@ static bool GetCriterion(double spatial_range, int target_n) {
   std::vector<int> types_sub_vol(n);
 
   // Define the subvolume to be the first octant of a cube
-  double sub_vol_max = Param::max_bound_ / 2;
+  double sub_vol_max = param->max_bound_ / 2;
 
   // The number of cells within the subvolume
   int num_cells_sub_vol = 0;

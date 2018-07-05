@@ -4,8 +4,6 @@
 #include <vector>
 
 #include "biodynamo.h"
-#include "math_util.h"
-#include "matrix.h"
 #include "my_cell.h"
 #include "soma_clustering_biology_modules.h"
 #include "validation_criterion.h"
@@ -32,17 +30,19 @@ struct CompileTimeParam : public DefaultCompileTimeParam<Backend> {
 };
 
 inline int Simulate(int argc, const char** argv) {
-  InitializeBioDynamo(argc, argv);
+  Simulation<> simulation(argc, argv);
+  auto* param = simulation.GetParam();
 
   // Define initial model
   // Create an artificial bounds for the simulation space
-  Param::bound_space_ = true;
-  Param::min_bound_ = 0;
-  Param::max_bound_ = 250;
-  Param::run_mechanical_interactions_ = false;
+  param->bound_space_ = true;
+  param->min_bound_ = 0;
+  param->max_bound_ = 250;
+  param->run_mechanical_interactions_ = false;
   int num_cells = 20000;
 
-  gTRandom.SetSeed(4357);
+  #pragma omp parallel
+  simulation.GetRandom()->SetSeed(4357);
 
   // Construct num_cells/2 cells of type 1
   auto construct_0 = [](const std::array<double, 3>& position) {
@@ -53,7 +53,7 @@ inline int Simulate(int argc, const char** argv) {
     cell.AddBiologyModule(Chemotaxis());
     return cell;
   };
-  ModelInitializer::CreateCellsRandom(Param::min_bound_, Param::max_bound_,
+  ModelInitializer::CreateCellsRandom(param->min_bound_, param->max_bound_,
                                       num_cells / 2, construct_0);
 
   // Construct num_cells/2 cells of type -1
@@ -65,17 +65,16 @@ inline int Simulate(int argc, const char** argv) {
     cell.AddBiologyModule(Chemotaxis());
     return cell;
   };
-  ModelInitializer::CreateCellsRandom(Param::min_bound_, Param::max_bound_,
+  ModelInitializer::CreateCellsRandom(param->min_bound_, param->max_bound_,
                                       num_cells / 2, construct_1);
 
   // Define the substances that cells may secrete
   // Order: substance_name, diffusion_coefficient, decay_constant, resolution
-  ModelInitializer::DefineSubstance(kSubstance_0, "Substance_0", 0.5, 0.1, 1);
-  ModelInitializer::DefineSubstance(kSubstance_1, "Substance_1", 0.5, 0.1, 1);
+  ModelInitializer::DefineSubstance(kSubstance_0, "Substance_0", 0.5, 0.1, 20);
+  ModelInitializer::DefineSubstance(kSubstance_1, "Substance_1", 0.5, 0.1, 20);
 
   // Run simulation for N timesteps
-  Scheduler<> scheduler;
-  scheduler.Simulate(1000);
+  simulation.GetScheduler()->Simulate(1000);
 
   double spatial_range = 5;
   auto crit = GetCriterion(spatial_range, num_cells / 8);
